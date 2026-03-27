@@ -1,0 +1,27 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": ["VITE_APP_ENV", "VITE_STAGING_SUPABASE_URL", "VITE_STAGING_SUPABASE_ANON_KEY", "VITE_PRODUCTION_SUPABASE_URL", "VITE_PRODUCTION_SUPABASE_ANON_KEY"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "gen-types": {
+      "cache": false
+    }
+  }
+}

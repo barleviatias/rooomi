@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Roomi</string>
+    <string name="title_activity_main">Roomi</string>
+    <string name="package_name">com.roomi.app</string>
+    <string name="custom_url_scheme">com.roomi.app</string>
+</resources>

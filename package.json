@@ -1,0 +1,21 @@
+{
+  "name": "roomi",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*", "tooling/*"],
+  "scripts": {
+    "dev": "turbo run dev --filter=@roomi/admin --filter=@roomi/landing --filter=@roomi/webapp",
+    "dev:admin": "turbo run dev --filter=@roomi/admin",
+    "dev:landing": "turbo run dev --filter=@roomi/landing",
+    "dev:webapp": "turbo run dev --filter=@roomi/webapp",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean",
+    "db:gen-types": "turbo run gen-types --filter=@roomi/supabase"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "~5.9.3"
+  },
+  "packageManager": "bun@1.2.0"
+}

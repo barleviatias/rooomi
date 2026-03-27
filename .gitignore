@@ -1,0 +1,54 @@
+node_modules
+dist
+.turbo
+*.local
+
+# Environment files (secrets)
+.env
+.env.*
+!.env.example
+
+# Lockfiles (only root bun.lock)
+apps/*/bun.lock
+apps/*/package-lock.json
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Capacitor
+apps/webapp/android/.gradle
+apps/webapp/android/app/build
+apps/webapp/ios/Pods
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage
+
+# Build caches
+*.tsbuildinfo
+
+# Debug screenshots
+*.png
+!**/public/**/*.png
+!**/res/**/*.png
+!**/Assets.xcassets/**/*.png
+
+# Playwright MCP
+.playwright-mcp
+
+# Auth/credentials files
+my-auth.json
+
+# Plan/audit docs (local only)
+PLAN.md
+AUDIT-STATUS.md
