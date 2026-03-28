@@ -189,6 +189,30 @@ export interface PaginatedResponse<T> {
   limit: number
 }
 
+export interface SeekerPreferences {
+  budget_min?: number
+  budget_max?: number
+  preferred_city?: string
+  preferred_cities?: string[]
+  preferred_neighborhoods?: string[]
+  max_distance_km?: number
+  move_in_date_earliest?: string
+  move_in_date_latest?: string
+  must_have_balcony: boolean
+  must_have_elevator: boolean
+  must_have_parking: boolean
+  must_have_ac: boolean
+  must_have_furnished: boolean
+  must_have_pets_allowed: boolean
+  must_have_safe_room: boolean
+  preferred_gender?: string
+  preferred_age_min?: number
+  preferred_age_max?: number
+  roommate_smoker_ok: boolean
+  roommate_pet_ok: boolean
+  roommate_kosher_required: boolean
+}
+
 export interface AnalyticsOverview {
   total_users: number
   total_properties: number

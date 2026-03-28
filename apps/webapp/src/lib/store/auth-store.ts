@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Profile, ProfileLifestyle } from '@roomi/types'
+import type { Profile, ProfileLifestyle, SeekerPreferences } from '@roomi/types'
 import { supabase } from '@/lib/supabase'
 import * as authService from '@/lib/services/auth'
 import { mockProfiles } from '@/lib/mock-data'
@@ -8,30 +8,6 @@ import { initPushNotifications, teardownPushNotifications } from '@/lib/services
 import { logService } from '@/lib/debug'
 
 export type ActiveMode = 'seeker' | 'host'
-
-interface SeekerPreferences {
-  budget_min?: number
-  budget_max?: number
-  preferred_city?: string
-  preferred_cities?: string[]
-  preferred_neighborhoods?: string[]
-  max_distance_km?: number
-  move_in_date_earliest?: string
-  move_in_date_latest?: string
-  must_have_balcony: boolean
-  must_have_elevator: boolean
-  must_have_parking: boolean
-  must_have_ac: boolean
-  must_have_furnished: boolean
-  must_have_pets_allowed: boolean
-  must_have_safe_room: boolean
-  preferred_gender?: string
-  preferred_age_min?: number
-  preferred_age_max?: number
-  roommate_smoker_ok: boolean
-  roommate_pet_ok: boolean
-  roommate_kosher_required: boolean
-}
 
 interface AuthState {
   user: Profile | null
@@ -292,7 +268,7 @@ export const useAuthStore = create<AuthState>()(
 
           if (!useMockData) {
             try {
-              await authService.updateProfile(user.id, updates as Record<string, unknown>)
+              await authService.updateProfile(user.id, updates)
             } catch (error) {
               logService('auth-store', 'updateProfile', undefined, error)
               set({ error: error instanceof Error ? error.message : 'Failed to update profile' })
@@ -311,7 +287,7 @@ export const useAuthStore = create<AuthState>()(
 
         if (!useMockData && user) {
           try {
-            await authService.updateProfileLifestyle(user.id, updates as Record<string, unknown>)
+            await authService.updateProfileLifestyle(user.id, updates)
           } catch (error) {
             logService('auth-store', 'updateLifestyle', undefined, error)
             set({ error: error instanceof Error ? error.message : 'Failed to update lifestyle' })
@@ -329,7 +305,7 @@ export const useAuthStore = create<AuthState>()(
 
         if (!useMockData && user) {
           try {
-            await authService.updateSeekerPreferences(user.id, updates as Record<string, unknown>)
+            await authService.updateSeekerPreferences(user.id, updates)
           } catch (error) {
             logService('auth-store', 'updateSeekerPreferences', undefined, error)
             set({ error: error instanceof Error ? error.message : 'Failed to update preferences' })

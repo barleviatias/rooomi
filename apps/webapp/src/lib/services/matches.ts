@@ -1,5 +1,6 @@
 import { supabase } from '../supabase'
 import { logService } from '../debug'
+import { PROFILE_SELECT } from '../supabase/queries'
 import { createNotification } from './notifications'
 import type { Match, Property, PropertyPhoto, Profile, ProfileLifestyle, Conversation } from '@roomi/types'
 
@@ -112,7 +113,7 @@ export async function getSeekerMatches(seekerId: string, status?: string) {
         *,
         photos:property_photos(*)
       ),
-      host:profiles!matches_host_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at),
+      host:profiles!matches_host_id_fkey(${PROFILE_SELECT}),
       conversation:conversations(*)
     `)
     .eq('seeker_id', seekerId)
@@ -142,7 +143,7 @@ export async function getHostMatches(hostId: string, status?: string) {
         photos:property_photos(*)
       ),
       seeker:profiles!matches_seeker_id_fkey(
-        id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at,
+        ${PROFILE_SELECT},
         lifestyle:profile_lifestyle(*)
       ),
       conversation:conversations(*)
