@@ -152,8 +152,7 @@ export function useCreateProperty() {
         ...propertyData,
         host_id: user.id,
         status: 'active',
-        published_at: new Date().toISOString(),
-      })
+      } as Parameters<typeof propertiesService.createProperty>[0])
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hostProperties'] })
