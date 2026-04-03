@@ -41,4 +41,4 @@ function Toggle({
   )
 }
 
-export { Toggle, toggleVariants }
+export { Toggle, toggleVariants } // eslint-disable-line react-refresh/only-export-components

@@ -170,5 +170,5 @@ export function useRealtimeConversations() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [user?.id, useMockData, queryClient])
+  }, [user, useMockData, queryClient])
 }

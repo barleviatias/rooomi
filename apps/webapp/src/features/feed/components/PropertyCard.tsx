@@ -42,8 +42,7 @@ export const PropertyCard = memo(function PropertyCard({
     if (navigator.share) {
       try {
         await navigator.share({ title, text, url })
-      } catch {
-      }
+      } catch { /* user cancelled share */ }
     } else {
       await navigator.clipboard.writeText(url)
       const toast = document.createElement('div')

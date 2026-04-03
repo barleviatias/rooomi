@@ -365,7 +365,7 @@ if (USE_MOCK_DATA) {
     if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
       if (session?.user) {
         const state = useAuthStore.getState()
-        if (event === 'SIGNED_IN' && state.isAuthenticated && state.user?.id === session.user.id) {
+        if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && state.isAuthenticated && state.user?.id === session.user.id) {
           useAuthStore.setState({ isLoading: false })
           return
         }
