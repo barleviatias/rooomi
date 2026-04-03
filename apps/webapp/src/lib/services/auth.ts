@@ -1,6 +1,7 @@
 import { supabase } from '../supabase'
 import { isNative } from '../platform'
 import { logService } from '../debug'
+import type { Profile, ProfileLifestyle, SeekerPreferences } from '@roomi/types'
 
 function getRedirectUrl() {
   if (isNative) {
@@ -125,7 +126,7 @@ export async function getProfile(userId: string) {
   return data
 }
 
-export async function updateProfile(userId: string, updates: Record<string, unknown>) {
+export async function updateProfile(userId: string, updates: Partial<Omit<Profile, 'id' | 'created_at'>>) {
   const { data, error } = await supabase
     .from('profiles')
     .update(updates)
@@ -137,7 +138,7 @@ export async function updateProfile(userId: string, updates: Record<string, unkn
   return data
 }
 
-export async function updateProfileLifestyle(profileId: string, lifestyle: Record<string, unknown>) {
+export async function updateProfileLifestyle(profileId: string, lifestyle: Partial<Omit<ProfileLifestyle, 'id' | 'profile_id'>>) {
   const { data, error } = await supabase
     .from('profile_lifestyle')
     .upsert({ ...lifestyle, profile_id: profileId }, { onConflict: 'profile_id' })
@@ -148,7 +149,7 @@ export async function updateProfileLifestyle(profileId: string, lifestyle: Recor
   return data
 }
 
-export async function updateSeekerPreferences(profileId: string, preferences: Record<string, unknown>) {
+export async function updateSeekerPreferences(profileId: string, preferences: Partial<SeekerPreferences>) {
   const { data, error } = await supabase
     .from('seeker_preferences')
     .upsert({ ...preferences, profile_id: profileId }, { onConflict: 'profile_id' })

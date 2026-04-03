@@ -37,6 +37,7 @@ async function initNativePush(userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function initWebPush(_userId: string) {
   if (!('Notification' in window)) return
   if (Notification.permission === 'default') {

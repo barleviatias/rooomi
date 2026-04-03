@@ -1,5 +1,6 @@
 import { supabase } from '../supabase'
 import { logService } from '../debug'
+import { PROFILE_SELECT, PROFILE_SENDER_SELECT } from '../supabase/queries'
 import type { Match, Property, PropertyPhoto, Profile, Conversation, Message } from '@roomi/types'
 
 export type ConversationWithDetails = Conversation & {
@@ -29,10 +30,11 @@ export async function getConversations(userId: string) {
           *,
           photos:property_photos(*)
         ),
-        seeker:profiles!matches_seeker_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at),
-        host:profiles!matches_host_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at)
+        seeker:profiles!matches_seeker_id_fkey(${PROFILE_SELECT}),
+        host:profiles!matches_host_id_fkey(${PROFILE_SELECT})
       )
     `)
+    .or(`seeker_id.eq.${userId},host_id.eq.${userId}`, { referencedTable: 'matches' })
     .order('last_message_at', { ascending: false, nullsFirst: false })
 
   if (error) {
@@ -40,12 +42,8 @@ export async function getConversations(userId: string) {
     throw error
   }
 
-  const allConversations = data as ConversationWithDetails[]
-  const filtered = allConversations.filter(
-    c => c.match?.seeker_id === userId || c.match?.host_id === userId
-  )
-  logService('chat', 'getConversations', filtered)
-  return filtered
+  logService('chat', 'getConversations', data)
+  return data as ConversationWithDetails[]
 }
 
 export async function getConversationById(conversationId: string) {
@@ -59,8 +57,8 @@ export async function getConversationById(conversationId: string) {
           *,
           photos:property_photos(*)
         ),
-        seeker:profiles!matches_seeker_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at),
-        host:profiles!matches_host_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at)
+        seeker:profiles!matches_seeker_id_fkey(${PROFILE_SELECT}),
+        host:profiles!matches_host_id_fkey(${PROFILE_SELECT})
       )
     `)
     .eq('id', conversationId)
@@ -85,8 +83,8 @@ export async function getConversationByMatchId(matchId: string) {
           *,
           photos:property_photos(*)
         ),
-        seeker:profiles!matches_seeker_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at),
-        host:profiles!matches_host_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at)
+        seeker:profiles!matches_seeker_id_fkey(${PROFILE_SELECT}),
+        host:profiles!matches_host_id_fkey(${PROFILE_SELECT})
       )
     `)
     .eq('match_id', matchId)
@@ -101,7 +99,7 @@ export async function getMessages(conversationId: string, limit = 50, offset = 0
     .from('messages')
     .select(`
       *,
-      sender:profiles(id, full_name, display_name, avatar_url)
+      sender:profiles(${PROFILE_SENDER_SELECT})
     `)
     .eq('conversation_id', conversationId)
     .eq('is_deleted', false)
@@ -128,7 +126,7 @@ export async function sendMessage(message: {
     .insert(message)
     .select(`
       *,
-      sender:profiles(id, full_name, display_name, avatar_url)
+      sender:profiles(${PROFILE_SENDER_SELECT})
     `)
     .single()
 
@@ -196,8 +194,8 @@ export async function getOrCreateConversation(matchId: string): Promise<Conversa
           *,
           photos:property_photos(*)
         ),
-        seeker:profiles!matches_seeker_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at),
-        host:profiles!matches_host_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at)
+        seeker:profiles!matches_seeker_id_fkey(${PROFILE_SELECT}),
+        host:profiles!matches_host_id_fkey(${PROFILE_SELECT})
       )
     `)
     .eq('match_id', matchId)
@@ -216,8 +214,8 @@ export async function getOrCreateConversation(matchId: string): Promise<Conversa
           *,
           photos:property_photos(*)
         ),
-        seeker:profiles!matches_seeker_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at),
-        host:profiles!matches_host_id_fkey(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at)
+        seeker:profiles!matches_seeker_id_fkey(${PROFILE_SELECT}),
+        host:profiles!matches_host_id_fkey(${PROFILE_SELECT})
       )
     `)
     .single()

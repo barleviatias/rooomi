@@ -1,5 +1,6 @@
 import { supabase } from '../supabase'
 import { logService } from '../debug'
+import { PROFILE_SELECT } from '../supabase/queries'
 import type { Property, PropertyPhoto, Profile, ScoredProperty } from '@roomi/types'
 
 export type PropertyWithPhotos = Property & {
@@ -34,7 +35,7 @@ export async function getProperties(
     .select(`
       *,
       photos:property_photos(*),
-      host:profiles(id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at)
+      host:profiles(${PROFILE_SELECT})
     `)
     .eq('status', 'active')
     .order('created_at', { ascending: false })
@@ -95,7 +96,7 @@ export async function getPropertyById(id: string) {
       *,
       photos:property_photos(*),
       host:profiles(
-        id, full_name, display_name, gender, avatar_url, bio, is_seeker, is_host, instagram_handle, preferred_city, is_verified, profile_completion_pct, last_active_at, created_at, updated_at,
+        ${PROFILE_SELECT},
         lifestyle:profile_lifestyle(*)
       )
     `)
@@ -134,7 +135,7 @@ export async function getPropertiesByHost(hostId: string, pagination?: { limit: 
   return data
 }
 
-export async function createProperty(property: Record<string, unknown>) {
+export async function createProperty(property: Omit<Partial<Property>, 'id' | 'created_at' | 'updated_at' | 'photos' | 'host'> & Pick<Property, 'host_id' | 'title' | 'price_monthly' | 'address_city' | 'available_from' | 'total_rooms' | 'available_rooms' | 'bathrooms'>) {
   logService('properties', 'createProperty (input)', property)
   const { data, error } = await supabase
     .from('properties')
@@ -150,7 +151,7 @@ export async function createProperty(property: Record<string, unknown>) {
   return data
 }
 
-export async function updateProperty(id: string, updates: Record<string, unknown>) {
+export async function updateProperty(id: string, updates: Partial<Omit<Property, 'id' | 'created_at' | 'photos' | 'host'>>) {
   logService('properties', 'updateProperty (input)', { id, updates })
   const { data, error } = await supabase
     .from('properties')
@@ -180,7 +181,7 @@ export async function deleteProperty(id: string) {
   }
 }
 
-export async function addPropertyPhoto(photo: Record<string, unknown>) {
+export async function addPropertyPhoto(photo: Omit<PropertyPhoto, 'id'>) {
   const { data, error } = await supabase
     .from('property_photos')
     .insert(photo)

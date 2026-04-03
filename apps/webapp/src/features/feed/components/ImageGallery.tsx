@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { cn } from '@roomi/ui'
 import type { PropertyPhoto } from '@roomi/types'
 
@@ -10,17 +10,18 @@ interface ImageGalleryProps {
 
 export function ImageGallery({ photos, className, onIndexChange }: ImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [prevPhotos, setPrevPhotos] = useState(photos)
+  if (photos !== prevPhotos) {
+    setPrevPhotos(photos)
+    setCurrentIndex(0)
+    onIndexChange?.(0)
+  }
 
   const goToIndex = useCallback((index: number) => {
     const newIndex = ((index % photos.length) + photos.length) % photos.length
     setCurrentIndex(newIndex)
     onIndexChange?.(newIndex)
   }, [photos.length, onIndexChange])
-
-  useEffect(() => {
-    setCurrentIndex(0)
-    onIndexChange?.(0)
-  }, [photos, onIndexChange])
 
   if (!photos.length) {
     return (

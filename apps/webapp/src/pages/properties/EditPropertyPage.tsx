@@ -65,6 +65,7 @@ export function EditPropertyPage() {
 
   const prop = existingProperty as Record<string, unknown> | null | undefined
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (prop && !isNewProperty) {
       setTitle((prop.title as string) || '')
@@ -93,6 +94,7 @@ export function EditPropertyPage() {
       setRoommatesDescription((prop.current_roommates_description as string) || '')
     }
   }, [prop, isNewProperty])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSave = async () => {
     if (!id || isNewProperty) {

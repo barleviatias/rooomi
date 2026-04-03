@@ -2,6 +2,15 @@ import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@roomi/ui'
 
+const CONFETTI_PARTICLES = Array.from({ length: 12 }, () => ({
+  left: 20 + Math.random() * 60,
+  top: 20 + Math.random() * 60,
+  y: -30 - Math.random() * 50,
+  x: (Math.random() - 0.5) * 100,
+}))
+
+const CONFETTI_COLORS = ['#ec4899', '#f472b6', '#fbbf24', '#34d399', '#60a5fa']
+
 interface ListingSuccessModalProps {
   isOpen: boolean
   listingTitle: string
@@ -55,21 +64,21 @@ export function ListingSuccessModal({
 
             {/* Confetti effect - simple dots */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {[...Array(12)].map((_, i) => (
+              {CONFETTI_PARTICLES.map((particle, i) => (
                 <motion.div
                   key={i}
                   className="absolute w-2 h-2 rounded-full"
                   style={{
-                    left: `${20 + Math.random() * 60}%`,
-                    top: `${20 + Math.random() * 60}%`,
-                    backgroundColor: ['#ec4899', '#f472b6', '#fbbf24', '#34d399', '#60a5fa'][i % 5],
+                    left: `${particle.left}%`,
+                    top: `${particle.top}%`,
+                    backgroundColor: CONFETTI_COLORS[i % 5],
                   }}
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{
                     scale: [0, 1, 0],
                     opacity: [0, 1, 0],
-                    y: [0, -30 - Math.random() * 50],
-                    x: [(Math.random() - 0.5) * 100],
+                    y: [0, particle.y],
+                    x: [particle.x],
                   }}
                   transition={{
                     duration: 1.5,

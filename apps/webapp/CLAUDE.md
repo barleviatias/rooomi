@@ -130,4 +130,34 @@ Migrations in `supabase/migrations/`. Types in `src/lib/supabase/types.ts`.
 - **iOS**: Xcode via Capacitor (`bun run mobile:ios`)
 - **Android**: Android Studio via Capacitor (`bun run mobile:android`)
 
-dont write comments when generating code
+## Coding Rules
+
+### No comments in generated code
+
+### useEffect — avoid it, prefer custom hooks
+
+`useEffect` is a last resort, not a default. Before reaching for it, ask whether the problem can be solved a better way.
+
+**Legitimate uses (keep):**
+- Subscribing to external systems: Supabase Realtime channels, browser events (`addEventListener`), `MediaQueryList`
+- Imperative DOM manipulation: scroll position, focus, measuring elements
+- Timers with cleanup (`setTimeout` / `setInterval` + `clearTimeout`)
+
+**Anti-patterns — use these alternatives instead:**
+
+| Situation | Instead of useEffect | Do this |
+|---|---|---|
+| Reset child state when a prop's identity changes | `useEffect(() => setState(...), [prop])` | Add `key={prop.id}` at the call site |
+| Initialise form fields from server data | `useEffect(() => setField(data.field), [data])` | `key={id}` on the form component, `useState(data?.field ?? default)` |
+| Trigger a side effect on mount (mark as read, mark seen) | `useEffect(() => mutate(id), [id])` | Extract a named custom hook: `useMarkAsRead(id)` |
+| React to state changes to open a modal / navigate | `useEffect(() => if (!auth) openModal(), [auth])` | Handle in render: conditional return or direct call |
+| Sync derived data into state | `useEffect(() => setState(compute(a, b)), [a, b])` | `useMemo(() => compute(a, b), [a, b])` |
+
+**Custom hook rule:** if you need `useEffect` for a recurring concern (subscribing, marking, syncing), wrap it in a named hook in `src/hooks/`. The hook owns the effect; the component just calls the hook. This keeps components clean and effects testable in isolation.
+
+**Examples of correct custom hooks in this codebase:**
+- `useMarkAsRead(conversationId)` — wraps the mark-as-read mutation trigger
+- `useMarkMatchesSeen(matchIds)` — wraps the seen-match sync
+- `useScrollToBottom(ref, trigger)` — wraps scroll imperative
+- `useRealtimeMessages` / `useRealtimeConversations` — wrap Supabase channel subscriptions
+- `useMediaQuery` — wraps `MediaQueryList` listener

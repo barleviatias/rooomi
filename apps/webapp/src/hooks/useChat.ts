@@ -42,7 +42,7 @@ export function useConversations() {
       return chatService.getConversations(user.id)
     },
     enabled: !!user,
-    refetchInterval: useMockData ? false : 10000,
+    refetchInterval: useMockData ? false : 60000,
   })
 }
 
@@ -73,7 +73,7 @@ export function useMessages(conversationId: string) {
       return chatService.getMessages(conversationId)
     },
     enabled: !!conversationId,
-    refetchInterval: useMockData ? false : 5000,
+    refetchInterval: useMockData ? false : 60000,
   })
 }
 
@@ -170,5 +170,5 @@ export function useRealtimeConversations() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [user?.id, useMockData, queryClient])
+  }, [user, useMockData, queryClient])
 }

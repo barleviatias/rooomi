@@ -254,7 +254,7 @@ export function ChatPage() {
     if (id) {
       markAsRead.mutate(id)
     }
-  }, [id])
+  }, [id, markAsRead])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
